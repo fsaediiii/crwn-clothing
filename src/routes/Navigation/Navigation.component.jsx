@@ -1,8 +1,20 @@
+import { useContext } from "react";
 import { Outlet,Link } from "react-router-dom";
+
+import {ReactComponent as CrownLogo} from '../../assets/crown.svg';
+import {UserContext} from '../../contexts/User.context';
+import {signOutUser} from '../../utils/firebase/firebase.utils';
+
 import  "./Navigation.styles.scss";
 
-import {ReactComponent as CrownLogo} from '../../assets/crown.svg'
 const Navigation = () => {
+  const {currentUser,setCurrentUser}=useContext(UserContext);
+  
+  const signOutHandler=async()=>{
+    await signOutUser();
+    setCurrentUser();
+  }
+
   return (
     <>
       <div className="navigation">
@@ -18,9 +30,13 @@ const Navigation = () => {
           <Link className="nav-link" to='/contact'>
             CONTACT
           </Link>
-          <Link className="nav-link" to='/auth'>
+          {
+            currentUser?<span className="nav-link" onClick={signOutHandler}>Sign Out</span>
+            : <Link className="nav-link" to='/auth'>
             SIGN IN
           </Link>
+          }
+         
         </div>
       </div>
       <Outlet />
